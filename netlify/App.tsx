@@ -11,6 +11,9 @@ function App() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [sortOption, setSortOption] = useState<'default' | 'price-asc' | 'price-desc' | 'duration'>('default');
   
+  // REMOVED: Parallax hook causing crash (useScroll/useTransform)
+  // Instead, we use simple relative/absolute positioning for stability.
+
   if (isAdmin) {
     return <AdminDashboard onBack={() => setIsAdmin(false)} />;
   }
@@ -48,9 +51,10 @@ function App() {
   return (
     <Layout onAdminClick={() => setIsAdmin(true)}>
       {/* Hero Section - STABLE VERSION */}
-      <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-dark-900">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-900">
         {/* Background Image: Absolute & Fixed-like via simple CSS */}
         <div className="absolute inset-0 z-0 overflow-hidden">
+           {/* Removed motion.div parallax y-transform to prevent visual crash/jitter on scroll */}
            <div className="w-full h-full">
               <img 
                 src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?q=80&w=2000&auto=format&fit=crop" 
@@ -75,7 +79,7 @@ function App() {
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
-          className="relative z-10 text-center px-4 md:px-6 w-full max-w-4xl flex flex-col items-center justify-center h-full pt-20"
+          className="relative z-10 text-center px-4 md:px-6 w-full max-w-4xl"
         >
           <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 backdrop-blur-md">
             <span className="text-gold-400 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">Premium Wellness</span>
@@ -108,15 +112,16 @@ function App() {
           </div>
         </motion.div>
         
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 z-10">
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 z-10">
           <span className="text-[10px] uppercase tracking-widest text-stone-400">Scroll</span>
           <div className="w-[1px] h-12 bg-gradient-to-b from-stone-400 to-transparent"></div>
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Services Section with Real Images */}
       <section id="services" className="py-24 md:py-32 bg-dark-900 relative">
         <div className="container mx-auto px-6">
+          {/* Header Centered */}
           <div className="flex flex-col items-center justify-center text-center mb-16 gap-8">
              <div>
                 <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Наши услуги</h2>
@@ -165,7 +170,7 @@ function App() {
                     />
                 </div>
 
-                {/* Content Overlay */}
+                {/* Content Overlay - Adjusted padding and z-index for readability */}
                 <div className="relative z-20 flex flex-col h-full justify-end p-6 md:p-10">
                    <div className="absolute top-6 right-6">
                         <span className="inline-block px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-widest text-stone-300">
@@ -173,16 +178,13 @@ function App() {
                         </span>
                    </div>
 
-                  <div className="mt-auto relative z-30">
+                  <div className="mt-auto">
                     <h3 className="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-gold-400 transition-colors drop-shadow-md">{service.title}</h3>
-                    <div className="relative">
-                      {/* Glass background for description text to prevent overlap issues */}
-                      <p className="text-stone-300 text-sm leading-relaxed mb-6 line-clamp-3 pr-2 relative z-10">
-                        {service.description}
-                      </p>
-                    </div>
+                    {/* Added padding to description to ensure it doesn't hit edges */}
+                    <p className="text-stone-300 text-sm leading-relaxed mb-6 line-clamp-3 pr-2">{service.description}</p>
                     
                     <div className="border-t border-white/10 pt-6 flex items-center justify-between">
+                      {/* GOLD PRICE COLOR */}
                       <span className="text-xl md:text-2xl font-bold text-gold-400">{service.price}</span>
                       <button 
                         onClick={() => document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })}
@@ -200,8 +202,9 @@ function App() {
         </div>
       </section>
 
-      {/* Masters Section */}
+      {/* MASTERS / TEAM SECTION - REDESIGNED FOR READABILITY */}
       <section id="about" className="py-24 bg-dark-800 relative overflow-hidden">
+        {/* Decorative Background Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-gold-600/5 rounded-full blur-[100px]"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-stone-700/5 rounded-full blur-[100px]"></div>
 
@@ -225,15 +228,16 @@ function App() {
                         className="group relative flex flex-col h-full"
                     >
                         <div className="h-[500px] relative rounded-2xl overflow-hidden mb-0 shadow-2xl border border-white/5">
+                            {/* Image fills the card */}
                             <img 
                                 src={member.image} 
                                 alt={member.name} 
                                 className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105"
                             />
                             
-                            {/* Improved Readability: Darker glass card */}
+                            {/* Info is now in a Glass Card at the bottom, NOT overlapping directly on image without contrast */}
                             <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-                                <div className="bg-dark-900/90 backdrop-blur-xl p-6 rounded-xl border border-white/10 shadow-glass">
+                                <div className="glass-card bg-dark-900/80 backdrop-blur-xl p-6 rounded-xl border border-white/10 shadow-glass">
                                     <div className="text-gold-400 text-xs font-bold tracking-widest uppercase mb-1">{member.role}</div>
                                     <h3 className="text-2xl font-serif text-white mb-3">{member.name}</h3>
                                     <p className="text-stone-300 text-sm leading-relaxed border-t border-white/10 pt-3">
@@ -246,6 +250,7 @@ function App() {
                 ))}
             </div>
             
+            {/* Trust Badges */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-white/5">
                 {[
                     { number: '5+', label: 'Лет опыта' },

@@ -137,7 +137,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAdminClick }) => {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-24 md:pt-0 w-full overflow-hidden">
+      <main className="pt-0 w-full overflow-hidden">
         {children}
       </main>
 
@@ -188,11 +188,11 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAdminClick }) => {
                       </a>
                       <button 
                         onClick={handleCopyPhone}
-                        className="p-2 rounded-full bg-white/5 hover:bg-gold-500/20 text-stone-400 hover:text-gold-400 transition-all"
+                        className="p-2 rounded-full bg-white/10 hover:bg-gold-500 text-gold-400 hover:text-dark-900 transition-all shadow-sm"
                         title="Скопировать номер"
                         aria-label="Скопировать номер"
                       >
-                        {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                        {copied ? <Check size={16} /> : <Copy size={16} />}
                       </button>
                    </div>
                    {copied && <span className="text-xs text-green-500 mt-1 block">Номер скопирован!</span>}
