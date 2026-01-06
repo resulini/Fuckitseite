@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Menu, X, UserCheck, MessageCircle } from 'lucide-react';
+import { Menu, X, UserCheck, MessageCircle, Copy, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { CONTACT_INFO } from '../constants';
 
@@ -11,6 +11,7 @@ interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({ children, onAdminClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,8 +29,15 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAdminClick }) => {
     }
   };
 
+  const handleCopyPhone = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(CONTACT_INFO.phone);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="min-h-screen bg-dark-900 font-sans text-stone-300 selection:bg-gold-500 selection:text-white relative">
+    <div className="min-h-screen w-full overflow-x-hidden bg-dark-900 font-sans text-stone-300 selection:bg-gold-500 selection:text-white relative">
       {/* Navigation - Floating Glass Style */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex justify-center ${
@@ -129,7 +137,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAdminClick }) => {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-24 md:pt-0">
+      <main className="pt-24 md:pt-0 w-full overflow-hidden">
         {children}
       </main>
 
@@ -171,9 +179,23 @@ export const Layout: React.FC<LayoutProps> = ({ children, onAdminClick }) => {
                   <span className="text-stone-600 text-xs uppercase mb-1">Где мы</span>
                   <span>{CONTACT_INFO.address}</span>
                 </li>
-                <li className="flex flex-col">
-                   <span className="text-stone-600 text-xs uppercase mb-1">Связь</span>
-                  <a href={`tel:${CONTACT_INFO.phone}`} className="hover:text-gold-400 transition-colors">{CONTACT_INFO.phone}</a>
+                <li className="flex flex-col group">
+                   <span className="text-stone-600 text-xs uppercase mb-2">Связь</span>
+                   {/* High Contrast Phone Block */}
+                   <div className="flex items-center gap-3">
+                      <a href={`tel:${CONTACT_INFO.phone}`} className="text-xl font-bold text-white hover:text-gold-400 transition-colors">
+                        {CONTACT_INFO.phone}
+                      </a>
+                      <button 
+                        onClick={handleCopyPhone}
+                        className="p-2 rounded-full bg-white/5 hover:bg-gold-500/20 text-stone-400 hover:text-gold-400 transition-all"
+                        title="Скопировать номер"
+                        aria-label="Скопировать номер"
+                      >
+                        {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                      </button>
+                   </div>
+                   {copied && <span className="text-xs text-green-500 mt-1 block">Номер скопирован!</span>}
                 </li>
               </ul>
             </div>

@@ -4,16 +4,15 @@ import { BookingForm } from './components/BookingForm';
 import { SERVICES, FAQ_ITEMS, TESTIMONIALS, TEAM } from './constants';
 import { AdminDashboard } from './components/AdminDashboard';
 import { ChevronDown, Plus, ArrowRight, Star, Quote } from 'lucide-react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [sortOption, setSortOption] = useState<'default' | 'price-asc' | 'price-desc' | 'duration'>('default');
   
-  // Parallax setup
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 1000], [0, 300]); // Moves background slower than scroll
+  // REMOVED: Parallax hook causing crash (useScroll/useTransform)
+  // Instead, we use simple relative/absolute positioning for stability.
 
   if (isAdmin) {
     return <AdminDashboard onBack={() => setIsAdmin(false)} />;
@@ -51,18 +50,19 @@ function App() {
 
   return (
     <Layout onAdminClick={() => setIsAdmin(true)}>
-      {/* Hero Section */}
+      {/* Hero Section - STABLE VERSION */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-900">
-        {/* Background Image with Parallax & Dark Overlay */}
+        {/* Background Image: Absolute & Fixed-like via simple CSS */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-           <motion.div style={{ y }} className="w-full h-[120%] -mt-10">
+           {/* Removed motion.div parallax y-transform to prevent visual crash/jitter on scroll */}
+           <div className="w-full h-full">
               <img 
                 src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?q=80&w=2000&auto=format&fit=crop" 
                 alt="Premium Spa Interior" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover opacity-90"
               />
-           </motion.div>
-           {/* Darker Overlay for Readability (Opacity 0.6) */}
+           </div>
+           {/* Darker Overlay for Readability */}
            <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
            
            {/* Top Gradient for Header Readability */}
@@ -79,34 +79,33 @@ function App() {
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
-          className="relative z-10 text-center px-6"
+          className="relative z-10 text-center px-4 md:px-6 w-full max-w-4xl"
         >
           <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 backdrop-blur-md">
-            <span className="text-gold-400 text-xs font-bold tracking-[0.2em] uppercase">Premium Wellness</span>
+            <span className="text-gold-400 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">Premium Wellness</span>
           </div>
           
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-sans font-medium text-transparent bg-clip-text bg-gradient-to-b from-white to-stone-400 mb-6 tracking-[2px] leading-[0.9]">
+          {/* Responsive Font Sizes */}
+          <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-sans font-medium text-transparent bg-clip-text bg-gradient-to-b from-white to-stone-400 mb-6 tracking-[1px] md:tracking-[2px] leading-[0.95]">
             ESTETIKA <br />
             <span className="text-white text-glow">TELA</span>
           </h1>
           
-          <p className="text-stone-200 text-lg md:text-xl max-w-xl mx-auto mb-12 font-light leading-relaxed">
+          <p className="text-stone-200 text-base md:text-xl max-w-xl mx-auto mb-12 font-light leading-relaxed px-2">
             Перезагрузка тела и разума. <br/>
             Профессиональный массаж в атмосфере абсолютного комфорта.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            {/* Primary Gold Button */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full px-6">
             <button 
               onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-8 py-4 bg-gold-500 text-dark-900 rounded-full font-bold hover:bg-white transition-all hover:shadow-gold transform hover:-translate-y-1"
+              className="w-full sm:w-auto px-8 py-4 bg-gold-500 text-dark-900 rounded-full font-bold hover:bg-white transition-all hover:shadow-gold transform hover:-translate-y-1"
             >
               Выбрать процедуру
             </button>
-            {/* Secondary Outline Button */}
             <button 
                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-               className="px-8 py-4 bg-transparent border border-gold-400 text-gold-100 rounded-full font-medium hover:bg-gold-500 hover:text-dark-900 transition-all backdrop-blur-sm"
+               className="w-full sm:w-auto px-8 py-4 bg-transparent border border-gold-400 text-gold-100 rounded-full font-medium hover:bg-gold-500 hover:text-dark-900 transition-all backdrop-blur-sm"
             >
               Узнать больше
             </button>
@@ -120,16 +119,16 @@ function App() {
       </section>
 
       {/* Services Section with Real Images */}
-      <section id="services" className="py-32 bg-dark-900 relative">
+      <section id="services" className="py-24 md:py-32 bg-dark-900 relative">
         <div className="container mx-auto px-6">
           {/* Header Centered */}
           <div className="flex flex-col items-center justify-center text-center mb-16 gap-8">
              <div>
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Наши услуги</h2>
+                <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Наши услуги</h2>
                 <p className="text-stone-400 max-w-md mx-auto">Выберите идеальный способ восстановления.</p>
              </div>
              
-             <div className="flex bg-white/5 p-1 rounded-full backdrop-blur-md border border-white/5">
+             <div className="flex flex-wrap justify-center gap-2 bg-white/5 p-1 rounded-full backdrop-blur-md border border-white/5">
                 {['default', 'price-asc', 'duration'].map((opt) => (
                   <button 
                     key={opt}
@@ -162,8 +161,8 @@ function App() {
                 className="glass-card rounded-[2rem] flex flex-col justify-between group transition-all duration-500 relative overflow-hidden h-[500px]"
               >
                 {/* Image Background for Top Half */}
-                <div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-dark-900/90 z-10"></div>
+                <div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden z-0">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-dark-900/95 z-10"></div>
                     <img 
                         src={service.image} 
                         alt={service.title} 
@@ -171,24 +170,25 @@ function App() {
                     />
                 </div>
 
-                {/* Content Overlay */}
-                <div className="relative z-20 flex flex-col h-full justify-end p-8 md:p-10">
-                   <div className="mb-auto pt-4 flex justify-between items-start">
-                        <span className="inline-block px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-widest text-stone-300">
+                {/* Content Overlay - Adjusted padding and z-index for readability */}
+                <div className="relative z-20 flex flex-col h-full justify-end p-6 md:p-10">
+                   <div className="absolute top-6 right-6">
+                        <span className="inline-block px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-widest text-stone-300">
                         {service.duration}
                         </span>
                    </div>
 
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-gold-400 transition-colors drop-shadow-md">{service.title}</h3>
-                    <p className="text-stone-300 text-sm leading-relaxed mb-6 line-clamp-3">{service.description}</p>
+                  <div className="mt-auto">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-gold-400 transition-colors drop-shadow-md">{service.title}</h3>
+                    {/* Added padding to description to ensure it doesn't hit edges */}
+                    <p className="text-stone-300 text-sm leading-relaxed mb-6 line-clamp-3 pr-2">{service.description}</p>
                     
                     <div className="border-t border-white/10 pt-6 flex items-center justify-between">
                       {/* GOLD PRICE COLOR */}
-                      <span className="text-2xl font-bold text-gold-400">{service.price}</span>
+                      <span className="text-xl md:text-2xl font-bold text-gold-400">{service.price}</span>
                       <button 
                         onClick={() => document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="w-10 h-10 rounded-full bg-white text-dark-900 flex items-center justify-center hover:bg-gold-400 hover:scale-110 transition-all duration-300"
+                        className="w-10 h-10 rounded-full bg-white text-dark-900 flex items-center justify-center hover:bg-gold-400 hover:scale-110 transition-all duration-300 shadow-lg"
                       >
                         <ArrowRight size={18} />
                       </button>
@@ -202,7 +202,7 @@ function App() {
         </div>
       </section>
 
-      {/* NEW: Masters / Team Section */}
+      {/* MASTERS / TEAM SECTION - REDESIGNED FOR READABILITY */}
       <section id="about" className="py-24 bg-dark-800 relative overflow-hidden">
         {/* Decorative Background Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-gold-600/5 rounded-full blur-[100px]"></div>
@@ -210,7 +210,7 @@ function App() {
 
         <div className="container mx-auto px-6 relative z-10">
             <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Ваши <span className="text-gold-400">мастера</span></h2>
+                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Ваши <span className="text-gold-400">мастера</span></h2>
                 <p className="text-stone-400 max-w-2xl mx-auto leading-relaxed">
                     Наши специалисты — это профессионалы с медицинским образованием и многолетним опытом. 
                     Мы заботимся не только о вашем теле, но и о душевном равновесии.
@@ -225,23 +225,25 @@ function App() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="group relative"
+                        className="group relative flex flex-col h-full"
                     >
-                        <div className="h-[450px] relative rounded-2xl overflow-hidden mb-6">
-                            <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-transparent to-transparent z-10 opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
+                        <div className="h-[500px] relative rounded-2xl overflow-hidden mb-0 shadow-2xl border border-white/5">
+                            {/* Image fills the card */}
                             <img 
                                 src={member.image} 
                                 alt={member.name} 
                                 className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105"
                             />
                             
-                            {/* Info overlay on image bottom */}
-                            <div className="absolute bottom-0 left-0 right-0 p-6 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                <div className="text-gold-400 text-xs font-bold tracking-widest uppercase mb-1">{member.role}</div>
-                                <h3 className="text-3xl font-serif text-white mb-2">{member.name}</h3>
-                                <p className="text-stone-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                                    {member.specialization}
-                                </p>
+                            {/* Info is now in a Glass Card at the bottom, NOT overlapping directly on image without contrast */}
+                            <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+                                <div className="glass-card bg-dark-900/80 backdrop-blur-xl p-6 rounded-xl border border-white/10 shadow-glass">
+                                    <div className="text-gold-400 text-xs font-bold tracking-widest uppercase mb-1">{member.role}</div>
+                                    <h3 className="text-2xl font-serif text-white mb-3">{member.name}</h3>
+                                    <p className="text-stone-300 text-sm leading-relaxed border-t border-white/10 pt-3">
+                                        {member.specialization}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </motion.div>
@@ -249,16 +251,16 @@ function App() {
             </div>
             
             {/* Trust Badges */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 pt-16 border-t border-white/5">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-white/5">
                 {[
                     { number: '5+', label: 'Лет опыта' },
-                    { number: '2k+', label: 'Довольных клиентов' },
+                    { number: '2k+', label: 'Клиентов' },
                     { number: '100%', label: 'Стерильность' },
                     { number: 'Premium', label: 'Косметика' },
                 ].map((badge, i) => (
                     <div key={i} className="text-center">
-                        <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-gold-300 to-gold-600 mb-1">{badge.number}</div>
-                        <div className="text-stone-500 text-xs uppercase tracking-widest">{badge.label}</div>
+                        <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-gold-300 to-gold-600 mb-2">{badge.number}</div>
+                        <div className="text-stone-500 text-[10px] md:text-xs uppercase tracking-widest">{badge.label}</div>
                     </div>
                 ))}
             </div>
@@ -320,8 +322,8 @@ function App() {
                   onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
                   className="w-full flex items-center justify-between p-6 text-left"
                 >
-                  <span className="font-medium text-stone-200">{item.question}</span>
-                  <span className={`p-2 rounded-full bg-white/5 transition-transform duration-300 ${openFaqIndex === index ? 'rotate-45' : ''}`}>
+                  <span className="font-medium text-stone-200 text-sm md:text-base pr-4">{item.question}</span>
+                  <span className={`p-2 rounded-full bg-white/5 transition-transform duration-300 flex-shrink-0 ${openFaqIndex === index ? 'rotate-45' : ''}`}>
                     <Plus size={16} className="text-gold-400" />
                   </span>
                 </button>
