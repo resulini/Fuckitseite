@@ -4,66 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Эстетика Тела | Салон массажа</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
-    
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom": "https://esm.sh/react-dom@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?deps=react@18.2.0",
-        "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime?deps=react@18.2.0",
-        "lucide-react": "https://esm.sh/lucide-react@0.263.1?deps=react@18.2.0",
-        "framer-motion": "https://esm.sh/framer-motion@10.12.16?deps=react@18.2.0,react-dom@18.2.0"
-      }
-    }
-    </script>
-
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              dark: {
-                900: '#0c0a09',
-                800: '#1c1917',
-                700: '#292524',
-                card: 'rgba(28, 25, 23, 0.6)',
-              },
-              gold: {
-                400: '#d1a85c',
-                500: '#b88d40',
-                glow: 'rgba(209, 168, 92, 0.5)',
-              }
-            },
-            fontFamily: {
-              sans: ['Montserrat', 'sans-serif'],
-              serif: ['Playfair Display', 'serif'],
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      body {
-        scroll-behavior: smooth;
-        background-color: #0c0a09;
-        color: #e7e5e4;
-        margin: 0;
-        overflow-x: hidden; /* Убирает горизонтальный скролл */
-      }
-      .glass-card {
-        background: rgba(28, 25, 23, 0.4);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-      }
-      .text-glow {
-        text-shadow: 0 0 20px rgba(209, 168, 92, 0.4);
-      }
-    </style>
   </head>
   <body>
     <div id="root"></div>
